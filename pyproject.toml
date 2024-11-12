@@ -1,0 +1,28 @@
+[project]
+name = "mlopsp2"
+version = "0.1.0"
+description = "A python package for the MLOPS HS24 course, 2nd project"
+authors = [
+    { name = "Nicola Hermann", email = "nicola.hermann@stud.hslu.ch" }
+]
+requires-python = ">=3.11.10"
+keywords = []
+
+dependencies = [
+    "torch",
+    "transformers",
+    "lightning",
+    "datasets",
+    "wandb",
+    "evaluate"
+]
+
+[build-system]
+requires = ["setuptools", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+
+[tool.setuptools.packages.find]
+where = ["src"]
