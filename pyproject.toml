@@ -15,6 +15,8 @@ dependencies = [
     "datasets",
     "wandb",
     "evaluate"
+    "scipy",
+    "scikit-learn",
 ]
 
 [build-system]
