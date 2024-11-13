@@ -107,17 +107,17 @@ class GLUETransformer(L.LightningModule):
         else:
             raise ValueError(f"Unknown optimizer type: {self.hparams.optimizer}")
 
-        # Initialize learning rate scheduler
+        
         scheduler = None
-        if self.hparams.scheduler == "linear":
+        if self.hparams.lr_scheduler == "linear":
             scheduler = get_linear_schedule_with_warmup(
                 optimizer,
                 num_warmup_steps=self.hparams.warmup_steps,
                 num_training_steps=self.trainer.estimated_stepping_batches,
             )
-        elif self.hparams.scheduler == "constant":
+        elif self.hparams.lr_scheduler == "constant":
             scheduler = get_constant_schedule_with_warmup(optimizer, num_warmup_steps=self.hparams.warmup_steps)
-        elif self.hparams.scheduler == "cosine":
+        elif self.hparams.lr_scheduler == "cosine":
             scheduler = get_cosine_schedule_with_warmup(
                 optimizer,
                 num_warmup_steps=self.hparams.warmup_steps,
