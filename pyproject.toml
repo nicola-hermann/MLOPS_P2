@@ -14,7 +14,7 @@ dependencies = [
     "lightning",
     "datasets",
     "wandb",
-    "evaluate"
+    "evaluate",
     "scipy",
     "scikit-learn",
     "python-dotenv",

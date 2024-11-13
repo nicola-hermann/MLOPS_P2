@@ -15,8 +15,8 @@ def main():
     args = parse_args()
 
     wandb.login(key=os.getenv("WANDB_API_KEY"), relogin=True)
-    wandb_project = os.getenv("WANDB_PROJECT")
-    wandb_entity = os.getenv("WANDB_ENTITY")
+
+    print("Login successful")
 
     L.seed_everything(args.seed)
 
@@ -51,11 +51,13 @@ def main():
         optimizer=args.optimizer,
     )
 
-    with wandb.init(project=wandb_project, entity=wandb_entity, name=run_name, config=vars(args)):
+    with wandb.init(
+        project=args.wandb_project, entity=args.wandb_entity, name=run_name, config=vars(args)
+    ):
         logger = WandbLogger()
         trainer = get_trainer(wandb.config.epochs, logger, wandb.config.save_path, run_name)
         trainer.fit(model=model, datamodule=dm)
-        wandb.log_model(f"{wandb.config.save_path}/{run_name}.ckpt",name=run_name)
+        wandb.log_model(f"{wandb.config.save_path}/{run_name}.ckpt", name=run_name)
         wandb.finish()
 
 
@@ -63,19 +65,34 @@ def parse_args():
     parser = argparse.ArgumentParser(description="Train a GLUE model with PyTorch Lightning")
 
     # Add hyperparameter arguments
-    parser.add_argument('--epochs', type=int, default=3, help='Number of epochs for training')
-    parser.add_argument('--learning_rate', type=float, default=4e-5, help='Learning rate')
-    parser.add_argument('--optimizer', type=str, default='AdamW', help='Optimizer (AdamW, SGD)')
-    parser.add_argument('--warmup_steps', type=int, default=30, help='Number of warmup steps')
-    parser.add_argument('--weight_decay', type=float, default=0.0, help='Weight decay')
-    parser.add_argument('--lr_scheduler', type=str, default='linear', help='Learning rate scheduler (linear, cosine, constant)')
-    parser.add_argument('--train_batch_size', type=int, default=64, help='Training batch size')
-    parser.add_argument('--eval_batch_size', type=int, default=64, help='Evaluation batch size')
-    parser.add_argument('--save_path', type=str, default='checkpoints', help='Model Save Path')
+    parser.add_argument("--epochs", type=int, default=3, help="Number of epochs for training")
+    parser.add_argument("--learning_rate", type=float, default=4e-5, help="Learning rate")
+    parser.add_argument("--optimizer", type=str, default="AdamW", help="Optimizer (AdamW, SGD)")
+    parser.add_argument("--warmup_steps", type=int, default=30, help="Number of warmup steps")
+    parser.add_argument("--weight_decay", type=float, default=0.0, help="Weight decay")
+    parser.add_argument(
+        "--lr_scheduler",
+        type=str,
+        default="linear",
+        help="Learning rate scheduler (linear, cosine, constant)",
+    )
+    parser.add_argument("--train_batch_size", type=int, default=64, help="Training batch size")
+    parser.add_argument("--eval_batch_size", type=int, default=64, help="Evaluation batch size")
+    parser.add_argument("--save_path", type=str, default="checkpoints", help="Model Save Path")
     parser.add_argument("--seed", type=int, default=31, help="Seed for reproducibility")
-    
+
+    # WANB arguments
+    parser.add_argument("--wandb_project", type=str, default="mlops-project", help="Wandb project")
+    parser.add_argument(
+        "--wandb_entity",
+        type=str,
+        default="nicola-hermann-hochschule-luzern",
+        help="Team or user name",
+    )
+
     args = parser.parse_args()
     return args
+
 
 if __name__ == "__main__":
     main()
